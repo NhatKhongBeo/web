@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.all.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<title>Trang Sách</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+	font-family: Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+header {
+	text-align: center;
+	padding: 20px;
+	background-color: #f2f2f2;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+}
+
+.left, .right {
+	width: 100%;
+	max-width: 500px;
+	margin-bottom: 20px;
+}
+
+.input-label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.input-field, .select-field {
+	width: 100%;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	box-sizing: border-box;
+}
+
+.select-field {
+	background-color: #fff;
+	cursor: pointer;
+}
+
+.upload-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	text-align: center;
+}
+
+.upload-button p {
+	margin: 0;
+}
+
+.image-container {
+	width: 100%;
+	height: 400px;
+	/* Tăng chiều cao để vùng hiển thị ảnh to ra */
+	border: 1px dashed #ccc;
+	background-color: #f7f7f7;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	border-radius: 3px;
+}
+
+.image-preview {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	width: auto;
+	/* Thêm thuộc tính width */
+	height: auto;
+	/* Thêm thuộc tính height */
+}
+
+footer {
+	position: fixed;
+	left: 50%;
+	transform: translate(-50%, 50%);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.save-button {
+	padding: 10px 20px;
+	border-radius: 3px;
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	cursor: pointer;
+}
+
+.left {
+	grid-template-columns: 1fr 1fr;
+}
+
+.form-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 10px;
+}
+
+.form-group {
+	margin-bottom: 10px;
+}
+
+.back-button {
+	display: block;
+	float: left;
+	margin-right: 20px;
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #007bff;
+}
+
+.back-button:hover {
+	text-decoration: underline;
+}
+
+@media only screen and (min-width: 768px) {
+	.container {
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: flex-start;
+	}
+	.left, .right {
+		margin-bottom: 0;
+	}
+}
+</style>
+</head>
+
+<body>
+	<header>
+		<a href="javascript:history.back()" class="back-button">Back</a>
+		<h1>Sách</h1>
+	</header>
+
+	<form th:object="${book}" th:action="@{/admin/book/save}" th:method="post"
+		enctype="multipart/form-data" id="save">
+		<input type="hidden" name="id" th:value="${book.id}"> <input
+			type="hidden" name="da_ban" th:value="${book.da_ban}"> <input
+			type="hidden" name="bia_sach" th:value="${book.bia_sach}">
+
+		<div class="container">
+			<div class="left">
+				<h2>Thông tin sách</h2>
+				<div class="form-row">
+					<div class="form-group">
+						<label class="input-label">Tiêu đề</label> <input type="text"
+							class="input-field" name="tieu_de" th:value="${book.tieu_de}"
+							required disabled>
+					</div>
+					<div class="form-group">
+						<label class="input-label">Tác giả</label> <input type="text"
+							class="input-field" name="tac_gia" th:value="${book.tac_gia}"
+							required disabled>
+					</div>
+				</div>
+
+				<label class="input-label">Mô tả:</label>
+				<textarea type="text" class="input-field" rows="5" name="mo_ta"
+					th:text="${book.mo_ta}" disabled></textarea>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label class="input-label">Ngày phát hành:</label> <input
+							type="date" class="input-field" name="ngay_ph"
+							th:value="${book.ngay_ph}" required disabled>
+					</div>
+					<div class="form-group">
+						<label class="input-label">Số trang:</label> <input type="number"
+							class="input-field" name="so_trang" th:value="${book.so_trang}"
+							min="0" disabled>
+					</div>
+				</div>
+
+				<label class="input-label">Thể loại:</label> <select
+					class="select-field" th:field="*{the_loai}" disabled>
+					<option value="" selected>--Chọn thể loại--</option>
+					<option value="Khoa học">Khoa học</option>
+					<option value="Văn học">Văn học</option>
+					<option value="Trinh thám">Trinh thám</option>
+					<option value="Tiểu thuyết">Tiểu thuyết</option>
+					<option value="Tình cảm">Tình cảm</option>
+				</select>
+
+
+			</div>
+
+
+			<div class="right">
+				<input type="file" id="file-upload" name="image" accept="image/*"
+					class="upload-button" disabled>
+				<div class="image-container">
+					<img class="image-preview" id="image-preview"
+						th:src="@{/images/{bia_sach} (bia_sach = ${book.bia_sach})}">
+				</div>
+			</div>
+		</div>
+		<div>
+			<footer>
+				<button type="button" id="edit-button" class="save-button">Edit</button>
+				<button type="submit" id="save-button" class="save-button"
+					style="display: none;">Save</button>
+			</footer>
+		</div>
+
+	</form>
+
+	<script>
+		document
+			.getElementById('edit-button')
+			.addEventListener(
+				'click',
+				function () {
+					document.getElementById('edit-button').style.display = 'none';
+					document.getElementById('save-button').style.display = 'block';
+					enableFormFields();
+				});
+
+		function enableFormFields() {
+			var formFields = document
+				.querySelectorAll('input:not([type="hidden"]), textarea, select');
+			for (var i = 0; i < formFields.length; i++) {
+				formFields[i].removeAttribute('disabled');
+			}
+			document.getElementById('file-upload').removeAttribute('disabled');
+		}
+
+		// Xử lý sự kiện khi chọn file ảnh
+		document.getElementById('file-upload').addEventListener(
+			'change',
+			function () {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					document.getElementById('image-preview').setAttribute(
+						'src', e.target.result);
+				}
+				reader.readAsDataURL(this.files[0]);
+			});
+	</script>
+</body>
+
+</html>
+<script>
+	$(document).ready(function () {
+		$('#save').submit(function (event) {
+			var form = this;
+			event.preventDefault();
+			// Hiển thị hộp thoại SweetAlert
+			Swal.fire({
+				title: 'Bạn có chắc chắn muốn thay đổi thông tin?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Có',
+				cancelButtonText: 'Không'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					form.submit();
+				}
+			});
+		});
+	});
+</script>

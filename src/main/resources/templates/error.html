@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Error Page</title>
+</head>
+<body>
+<h1>Error Page</h1>
+
+<div th:if="${e}">
+  <p>Error: <span th:text="${e.message}"></span></p>
+</div>
+
+</body>
+</html>
